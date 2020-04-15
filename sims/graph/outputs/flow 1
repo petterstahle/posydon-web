@@ -1,0 +1,41 @@
+digraph {
+	B0 [label="star1_state1
+star2_state1" fixedsize=true shape=circle width=1]
+	S0 [label=step_1 height=1 shape=box style=bold width=0.2]
+	B0 -> S0 [arrowhead=normal]
+	B1 [label="star1_state2
+star2_state2" fixedsize=true shape=circle width=1]
+	S1 [label=step_2 height=1 shape=box style=bold width=0.2]
+	B1 -> S1 [arrowhead=normal]
+	S0 -> B1 [arrowhead=normal]
+	B2 [label="star1_state3
+star2_state3" fixedsize=true shape=circle width=1]
+	S1 [label=step_2 height=1 shape=box style=bold width=0.2]
+	B2 -> S1 [arrowhead=normal]
+	S0 -> B2 [arrowhead=normal]
+	B3 [label="star1_state4
+star2_state4" fixedsize=true shape=circle width=1]
+	S3 [label=step_end height=1 shape=box style=dashed width=0.2]
+	B3 -> S3 [arrowhead=none style=dashed]
+	S0 -> B3 [arrowhead=normal]
+	B4 [label="star1_state5
+star2_state5" fixedsize=true shape=circle width=1]
+	S4 [label=step_3 height=1 shape=box style=bold width=0.2]
+	B4 -> S4 [arrowhead=normal]
+	S0 -> B4 [arrowhead=normal]
+	B5 [label="star1_state6
+star2_state6" fixedsize=true shape=circle width=1]
+	S4 [label=step_3 height=1 shape=box style=bold width=0.2]
+	B5 -> S4 [arrowhead=normal]
+	S0 -> B5 [arrowhead=normal]
+	B6 [label="star1_state7
+star2_state7" fixedsize=true shape=circle width=1]
+	S6 [label=step_end height=1 shape=box style=dashed width=0.2]
+	B6 -> S6 [arrowhead=none style=dashed]
+	S1 -> B6 [arrowhead=normal]
+	B7 [label="star1_state8
+star2_state8" fixedsize=true shape=circle width=1]
+	S7 [label=step_end height=1 shape=box style=dashed width=0.2]
+	B7 -> S7 [arrowhead=none style=dashed]
+	S1 -> B7 [arrowhead=normal]
+}
