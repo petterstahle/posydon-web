@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Sims</h1>
+{% for obj in object_list %}
+<p>
+  #{{ obj.id }} - <a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a>
+</p>
+{% endfor %}
+
+<li><a href="{% url 'sims:sim_prop-create' %}">Create new sim.</a></li>
+
+{% endblock %}

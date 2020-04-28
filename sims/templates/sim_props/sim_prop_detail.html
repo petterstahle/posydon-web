@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Simulation Properties</h1>
+<h3>Title: {{ object.title }}</h3>
+<p>Flow:<br> {{ object.flow }}</p>
+
+<p>Step_Cosmic args:<br>
+  end: {{ object.cosmic_end }}<br>
+  evolve_dict: {{ object.cosmic_evolve_dict }}
+  </p>
+
+<p>Step_Mesa args:<br>
+  mechanism: {{ object.mesa_mechanism }}<br>
+  sigma_kcik: {{ object.mesa_sigma_kick }}<br>
+  phi: {{ object.mesa_phi }}<br>
+  cos_theta: {{ object.mesa_cos_theta }}<br>
+  mean_anomaly: {{ object.mesa_mean_anomaly }}<br>
+  mesa_mass_central_BH: {{ object.mesa_mass_central_BH }}<br>
+  neutrino_mass_loss_fraction: {{ object.mesa_neutrino_mass_loss_fraction }}<br>
+  neutrino_AM_loss: {{ object.mesa_neutrino_AM_loss }}<br>
+  PISN: {{ object.mesa_PISN }}<br>
+  log_scale: {{ object.mesa_log_scale }}<br>
+  verbose: {{ object.mesa_verbose }}<br>
+  </p>
+
+<p>step_end: {{ object.step_end }}</p>
+<p>max_time: {{ object.max_time }}</p>
+
+
+<li><a href="{% url 'sims:sim_prop-update' object.id %}">Update.</a></li>
+<li><a href="{% url 'sims:sim_prop-delete' object.id %}">Delete.</a></li>
+
+<li><a href="{% url 'sims:sim_prop-dl' object.id %}">Dowload properties dictionary.</a></li>
+
+{% endblock %}

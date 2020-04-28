@@ -10,9 +10,10 @@ from django.views.generic import (
     DeleteView,
     View
 )
-from .models import Flow
+from .models import Flow, SimProp
 from .forms import FlowForm
 from .graph.genGraph import genGraph
+from .properties.genProp import genProp
 
 # Create your views here.
 #these are class based views. Django recommends these.
@@ -82,4 +83,55 @@ class FlowGraphView(View):
         full_path = render_path + title + '.' + format
 
         response = FileResponse(open(full_path, 'rb'), as_attachment = dl)
+        return response
+
+
+class SimPropCreateView(CreateView):
+    """Used to create a new Simulation Properties object. Called when requesting /sims/props/create/ url."""
+    model = SimProp
+    # form_class = FlowForm
+    template_name = 'sim_props/sim_prop_create.html'
+    fields = ['title', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_phi', 'mesa_cos_theta', 'mesa_mean_anomaly', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss_fraction', 'mesa_neutrino_AM_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
+
+class SimPropDetailView(DetailView):
+    """Used to display details of a simulation properties object."""
+    template_name = 'sim_props/sim_prop_detail.html'
+    model = SimProp
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class SimPropListView(ListView):
+    """Used to list al sim. props. with their title, and primary key
+    Called when requesting /sims/props,
+    Returns sim_prop_list.html template"""
+    template_name = 'sim_props/sim_prop_list.html'
+    queryset = SimProp.objects.all()
+
+
+class SimPropUpdateView(UpdateView):
+    model = SimProp
+    fields = ['title', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_phi', 'mesa_cos_theta', 'mesa_mean_anomaly', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss_fraction', 'mesa_neutrino_AM_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
+    template_name = 'sim_props/sim_prop_update.html'
+
+class SimPropDeleteView(DeleteView):
+    model = SimProp
+    template_name = 'sim_props/sim_prop_delete.html'
+    success_url = reverse_lazy('sims:sim_prop-list')
+
+
+class SimPropGenView(View):
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        obj = get_object_or_404(SimProp, pk=pk)
+
+        properties = genProp(obj)
+
+        filepath = './sims/properties/outputs/properties.py'
+        with open(filepath,'w') as f:
+            print(properties, file=f)
+            f.close()
+
+        response = FileResponse(open(filepath, 'rb'), as_attachment = True)
         return response
