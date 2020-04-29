@@ -1,3 +1,5 @@
+import ast
+
 def genProp(object):
     """This function takes simulation properties arguments in the form of database fields represented by the SimProp model object (which the SimPropGenView view handles), and outputs the simulation properties in the form of a dictionary, which can then be passed as the kwargs to the SimulationProperties function.
 
@@ -32,5 +34,5 @@ def genProp(object):
         'step_end' : object.step_end,
         'max_time' : object.max_time
     }
-
+    # properties = ast.literal_eval(prop_string)
     return properties

@@ -125,12 +125,25 @@ class SimPropGenView(View):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
         obj = get_object_or_404(SimProp, pk=pk)
-
+        #generate SimulationProperties dictionary
         properties = genProp(obj)
-
+        #acces file
         filepath = './sims/properties/outputs/properties.py'
         with open(filepath,'w') as f:
-            print(properties, file=f)
+            #comment header describing usage of dict
+            comment = """# This is an automatically generated python file containing the properties dictionary, which is passed to SimulationProperties as kwargs.
+# Example usage of passing properties to SimulationProperties:
+# prop = SimulationProperties(
+#     flow=properties[flow],
+#     step_cosmic=CosmicBSE(*properties[step_cosmic]),
+#     step_mesa=step_MESA(**properties[step_mesa]),
+#     step_end=properties[step_end],
+#     max_time=properties[max_time]
+#     )
+"""
+            file_content = comment + "properties = " + str(properties)
+            f.write(file_content)
+            # print(properties, file=f)
             f.close()
 
         response = FileResponse(open(filepath, 'rb'), as_attachment = True)
