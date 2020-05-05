@@ -44,6 +44,7 @@ class SimProp(models.Model):
     cosmic_evolve_dict = models.TextField(default='')
 
     #step_mesa args
+    mesa_metallicity = models.FloatField() #add validator 0<x<1
     mech_choices = [
         ('Fryer+12-rapid','Fryer+12-rapid'),
         ('Fryer+12-delayed','Fryer+12-delayed'),
@@ -52,12 +53,8 @@ class SimProp(models.Model):
         ('Sukhbold+16-N20-engine','Sukhbold+16-N20-engine')]
     mesa_mechanism = models.CharField(max_length=40,choices=mech_choices)
     mesa_sigma_kick = models.DecimalField(max_digits=6,decimal_places=3) #add validator >0
-    mesa_phi = models.DecimalField(null=True,blank=True,max_digits=6,decimal_places=3) #add validator 0<x<2pi
-    mesa_cos_theta = models.DecimalField(null=True,blank=True,max_digits=6,decimal_places=3) #add validator -1<x<1
-    mesa_mean_anomaly = models.DecimalField(null=True,blank=True,max_digits=6,decimal_places=3) #add validator 0<x<2pi
     mesa_mass_central_BH = models.DecimalField(null=True,blank=True,max_digits=6,decimal_places=3) #add validator >0
-    mesa_neutrino_mass_loss_fraction = models.DecimalField(max_digits=6,decimal_places=3) #add validator 0<x<1
-    mesa_neutrino_AM_loss = models.BooleanField()
+    mesa_neutrino_mass_loss = models.DecimalField(max_digits=6,decimal_places=3) #add validator 0<x<1
     mesa_PISN = models.CharField(max_length=20,blank=True,default='None')#add choises of number or string 'Marchant+19'
     mesa_log_scale = models.BooleanField()
     mesa_verbose = models.BooleanField()
