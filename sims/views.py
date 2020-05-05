@@ -13,7 +13,7 @@ from django.views.generic import (
 from .models import Flow, SimProp
 from .forms import FlowForm
 from .graph.genGraph import genGraph
-from .properties.genProp import genProp
+from .properties.genScript import genScript
 
 # Create your views here.
 #these are class based views. Django recommends these.
@@ -91,7 +91,7 @@ class SimPropCreateView(CreateView):
     model = SimProp
     # form_class = FlowForm
     template_name = 'sim_props/sim_prop_create.html'
-    fields = ['title', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_phi', 'mesa_cos_theta', 'mesa_mean_anomaly', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss_fraction', 'mesa_neutrino_AM_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
+    fields = ['title', 'metallicity', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
 
 class SimPropDetailView(DetailView):
     """Used to display details of a simulation properties object."""
@@ -112,7 +112,7 @@ class SimPropListView(ListView):
 
 class SimPropUpdateView(UpdateView):
     model = SimProp
-    fields = ['title', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_phi', 'mesa_cos_theta', 'mesa_mean_anomaly', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss_fraction', 'mesa_neutrino_AM_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
+    fields = ['title', 'metallicity', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
     template_name = 'sim_props/sim_prop_update.html'
 
 class SimPropDeleteView(DeleteView):
@@ -121,30 +121,14 @@ class SimPropDeleteView(DeleteView):
     success_url = reverse_lazy('sims:sim_prop-list')
 
 
-class SimPropGenView(View):
+class SimScriptView(View):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
         obj = get_object_or_404(SimProp, pk=pk)
-        #generate SimulationProperties dictionary
-        properties = genProp(obj)
-        #acces file
-        filepath = './sims/properties/outputs/properties.py'
-        with open(filepath,'w') as f:
-            #comment header describing usage of dict
-            comment = """# This is an automatically generated python file containing the properties dictionary, which is passed to SimulationProperties as kwargs.
-# Example usage of passing properties to SimulationProperties:
-# prop = SimulationProperties(
-#     flow=properties[flow],
-#     step_cosmic=CosmicBSE(*properties[step_cosmic]),
-#     step_mesa=step_MESA(**properties[step_mesa]),
-#     step_end=properties[step_end],
-#     max_time=properties[max_time]
-#     )
-"""
-            file_content = comment + "properties = " + str(properties)
-            f.write(file_content)
-            # print(properties, file=f)
-            f.close()
+        #generate simulation script
+        filename = 'script.py'
+        filepath = './sims/properties/outputs/' + filename
+        genScript(obj,filepath)
 
         response = FileResponse(open(filepath, 'rb'), as_attachment = True)
         return response

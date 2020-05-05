@@ -23,5 +23,5 @@ urlpatterns = [
     #detail
     path('props/<int:pk>/', SimPropDetailView.as_view(), name='sim_prop-detail'),
     #generate properties file
-    path('props/<int:pk>/dl/', SimPropGenView.as_view(), name='sim_prop-dl')
+    path('props/<int:pk>/dl/', SimScriptView.as_view(), name='sim_script-dl')
 ]

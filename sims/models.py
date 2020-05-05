@@ -36,6 +36,8 @@ class SimProp(models.Model):
     #title: title to document the flow (ex. "flow1", "bob's flow",etc...)
     title = models.CharField(max_length=30)
 
+    metallicity = models.FloatField(default=0) #add validator 0<x<1
+    
     #flow is like content described in Flow Object
     flow = models.TextField(default='')
 
@@ -44,7 +46,6 @@ class SimProp(models.Model):
     cosmic_evolve_dict = models.TextField(default='')
 
     #step_mesa args
-    mesa_metallicity = models.FloatField() #add validator 0<x<1
     mech_choices = [
         ('Fryer+12-rapid','Fryer+12-rapid'),
         ('Fryer+12-delayed','Fryer+12-delayed'),
@@ -62,7 +63,7 @@ class SimProp(models.Model):
     #additional args
     #step_end
     step_end = models.CharField(max_length=20,default='end', blank=True)
-    max_time = models.FloatField()
+    max_time = models.FloatField(default=0)
 
     def get_absolute_url(self):
         """Returns the url to access a particular simprop instance."""
