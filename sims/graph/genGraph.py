@@ -7,64 +7,39 @@ from graphviz import Digraph
 import ast
 
 # dictionary of steps with default children states
+# step_default = {
+#     'step_1':
+#     [('star1_state2','star2_state2'),
+#     ('star1_state3','star2_state3'),
+#     ('star1_state4','star2_state4'),
+#     ('star1_state5','star2_state5'),
+#     ('star1_state6','star2_state6')],
+#     'step_2':
+#     [('star1_state7','star2_state7'),
+#     ('star1_state8','star2_state8')],
+#     'step_3':
+#     [('star1_state9','star2_state9')]
+#     }
+
 step_default = {
-    'step_1':
-    [('star1_state2','star2_state2'),
-    ('star1_state3','star2_state3'),
-    ('star1_state4','star2_state4'),
-    ('star1_state5','star2_state5'),
-    ('star1_state6','star2_state6')],
-    'step_2':
-    [('star1_state7','star2_state7'),
-    ('star1_state8','star2_state8')],
-    'step_3':
-    [('star1_state9','star2_state9')]
+    'step_zams':{'CO+He':[
+    ('BH', 'HeMS'),
+    ('HeMS', 'BH'),
+    ('BH', 'PostHeMS'),
+    ('PostHeMS', 'BH'),
+    ('NS', 'HeMS'),
+    ('HeMS', 'NS'),
+    ('NS', 'PostHeMS'),
+    ('PostHeMS', 'NS')]},
+    'step_mesa':[
+    ('BH', 'BH'),
+    ('BH', 'NS'),
+    ('NS', 'BH'),
+    ('NS', 'NS'),
+    ('NS', 'WD'),
+    ],
+    #step_COLLAPSE, step_ODE, step_RLO, step_NORLO...
     }
-
-
-# buggy function, use parseFlow_dict if possible
-# will parse the content of flow given as a string
-# returns list of "flow levels"
-# each 'level' is a list of 3 elements (string): starA_state, starB_state, step_name
-def parseFlow_string(flow):
-
-    #split flow into levels
-    levels = flow.strip()
-    levels = levels.strip('{}')
-    levels = levels.strip()
-    levels = levels.split('\n')
-
-    flow_size = len(levels)
-    parsed_fields = [[] for _ in range(flow_size)]
-
-    #level parsing
-    for i, l in enumerate(levels):
-        #partition level into bubble and step
-        bubble, _, step = l.partition(':')
-
-        #bubble parsing
-        bubble = bubble.strip()
-        bubble = bubble.strip('()')
-        #split bubble into params
-        params = bubble.split(',')
-        #delete last 2 fields of params (not useful for graph)
-        params.pop(-1)
-        params.pop(-1)
-        #param parsing
-        for p in params:
-            p = p.strip()
-            p = p.strip("''")
-            #add to field
-            parsed_fields[i].append(p)
-
-        #step parsing
-        step = step.strip(',')
-        step = step.strip()
-        step = step.strip("''")
-        #add to field
-        parsed_fields[i].append(step)
-
-    return parsed_fields
 
 
 
@@ -81,7 +56,7 @@ def parseFlow_dict(flow):
 
 
 
-def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = 'png'):
+def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
     """Procedure generating a graphviz.digraph from a parsed flow
     Arguments:
     -parsed_flow:   return value described in parseFlow_dict()
@@ -104,24 +79,24 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
     default_arrowtype = 'normal'
     #default steps dictionnary
     steps = step_default
-    #initialise dot file
-    dot = Digraph(format=format)
-    #initialise <step:step_node> index pair
+    #initialise <step_label:step_node> index pairs dict
     stepIndexes={k:None for k in steps.keys()}
 
     #GENERATION
+    #initialise dot file
+    dot = Digraph(format=format)
     for i, level in enumerate(parsed_flow):
         #NODES
 
         #bubble node
         starStateA = level[0]
         starStateB = level[1]
+        #step node
+        step_label = level[2]
         bubble_label = starStateA + '\n' + starStateB
         bubble_index = 'B' + str(i)
         #generate bubble
         dot.node(bubble_index, label=bubble_label, shape=bubble_shape, fixedsize='true', width=bubble_width)
-        #step node
-        step_label = level[2]
         #for step_end
         step_style = default_step_style
         if step_label == END:
@@ -148,9 +123,15 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
         #step-to-bubble edge
         #this is where we use the step_default dictionary to connect the bubble to its parentstep (nextbubble)
         stepParent = None
-        for step, bubbles in steps.items():
-            if (starStateA, starStateB) in bubbles:
-                stepParent = step
+        for step, el in steps.items():
+            #if el is a dictionary (for ex. step_cosmic has values as dict with keys as cosmic_end params and values as bubbles)
+            if isinstance(el, dict):
+                if (kwargs['cosmic_end']):
+                    if (starStateA, starStateB) in el[kwargs['cosmic_end']]:
+                        stepParent = step
+            else: #if el is just a list (i.e. step_mesa)
+                if (starStateA, starStateB) in el:
+                    stepParent = step
         #if bubble has a parent step, we connect it
         if(stepParent):
             parent_index = stepIndexes[stepParent]
@@ -164,7 +145,7 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
 
 
 
-def genGraph(flow, title = 'graph', path = './outputs/', format = 'png'):
+def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
     """Function used to generate graph from a flow with correct format.
     Uses parseFlow_dict and genGraphHelper helper functions.
     Uses the step_default dictionary, which maps bubbles to their default corresponding parent step
@@ -182,7 +163,7 @@ def genGraph(flow, title = 'graph', path = './outputs/', format = 'png'):
         flow_parsed = parseFlow_dict(flow_dict)
     else:
         flow_parsed = parseFlow_dict(flow)
-    genGraphHelper(flow_parsed, title, path, format)
+    genGraphHelper(flow_parsed, title, path, format, **kwargs)
     return
 
 
@@ -217,3 +198,52 @@ def genGraph(flow, title = 'graph', path = './outputs/', format = 'png'):
 
 # run script for debug
 # genGraph(flow, title='test', format='pdf')
+
+
+
+
+
+
+# buggy function, use parseFlow_dict if possible
+# will parse the content of flow given as a string
+# returns list of "flow levels"
+# each 'level' is a list of 3 elements (string): starA_state, starB_state, step_name
+# def parseFlow_string(flow):
+#
+#     #split flow into levels
+#     levels = flow.strip()
+#     levels = levels.strip('{}')
+#     levels = levels.strip()
+#     levels = levels.split('\n')
+#
+#     flow_size = len(levels)
+#     parsed_fields = [[] for _ in range(flow_size)]
+#
+#     #level parsing
+#     for i, l in enumerate(levels):
+#         #partition level into bubble and step
+#         bubble, _, step = l.partition(':')
+#
+#         #bubble parsing
+#         bubble = bubble.strip()
+#         bubble = bubble.strip('()')
+#         #split bubble into params
+#         params = bubble.split(',')
+#         #delete last 2 fields of params (not useful for graph)
+#         params.pop(-1)
+#         params.pop(-1)
+#         #param parsing
+#         for p in params:
+#             p = p.strip()
+#             p = p.strip("''")
+#             #add to field
+#             parsed_fields[i].append(p)
+#
+#         #step parsing
+#         step = step.strip(',')
+#         step = step.strip()
+#         step = step.strip("''")
+#         #add to field
+#         parsed_fields[i].append(step)
+#
+#     return parsed_fields

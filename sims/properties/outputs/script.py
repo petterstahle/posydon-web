@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 from tqdm import tqdm
 from posydon.binary_evol import SimulationProperties
 from posydon.binary_evol.cosmic_bse import CosmicBSE
@@ -58,15 +59,21 @@ prop = SimulationProperties(
 )
 
 # generate binaries
-p_min = 10**0.15
+p_min = 0.4
 p_max = 10**3.5
 pop = gen_zams_binaries_COMPAS( nbin = 1000 , alpha=2.3, m_lim=[5,150], p_lim=[p_min,p_max],  metallicity=Z, properties = prop )
 
 # evolve binaries
+BBHs = [] # store here BBHs
 for binary in tqdm(pop):
     try:
         binary.evolve()
+        if binary.orbital_period > 0. and binary.orbital_period < 10.:
+            BBHs.append(binary)
     except Exception as err:
         print(err, binary.restore())
 
-# TODO: saving routine
+# saving routine
+print('We found', len(BBHs), 'BBHs')
+with open('./BBHs-population.pkl', 'wb') as file:
+    pickle.dump(BBHs, file)

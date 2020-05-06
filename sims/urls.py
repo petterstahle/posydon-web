@@ -10,7 +10,7 @@ urlpatterns = [
     path('<int:pk>/update/', FlowUpdateView.as_view(), name='flow-update'),
     path('<int:pk>/delete/', FlowDeleteView.as_view(), name='flow-delete'),
     path('<int:pk>/', FlowDetailView.as_view(), name='flow-detail'),
-    path('<int:pk>/graph/', FlowGraphView.as_view(), name='flow-graph'),
+    path('props/<int:pk>/graph/', FlowGraphView.as_view(), name='flow-graph'),
     #sim_props
     #list
     path('props/', SimPropListView.as_view(), name='sim_prop-list'),

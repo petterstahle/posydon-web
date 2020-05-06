@@ -29,7 +29,8 @@
 
 <li><a href="{% url 'sims:sim_prop-update' object.id %}">Update.</a></li>
 <li><a href="{% url 'sims:sim_prop-delete' object.id %}">Delete.</a></li>
-
+<li><a href="{% url 'sims:flow-graph' object.id %}">Display flow graph.</a></li>
+<li><a href="{% url 'sims:flow-graph' object.id %}?format=pdf&download=true">Download flow graph as pdf.</a></li>
 <li><a href="{% url 'sims:sim_script-dl' object.id %}">Dowload script.</a></li>
 
 {% endblock %}

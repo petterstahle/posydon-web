@@ -55,15 +55,15 @@ class FlowDeleteView(DeleteView):
 
 
 class FlowGraphView(View):
-    """When /sims/<id>/graph url is requested, this view generates an image of the flow graph with the flow primary key as id.
-    by default, it displays .png file
+    """When /sims/<id>/graph url is requested, this view generates an image of the flow graph with the flow from a given SimProp object.
+    By default, it displays .png file
     options: download, change format to pdf
     The location of generated files is in /sims/graph/outputs"""
     def get(self, request, *args, **kwargs):
         #get the flow object from database
         pk = self.kwargs.get('pk')
-        obj = get_object_or_404(Flow, pk=pk)
-        flow = obj.content
+        obj = get_object_or_404(SimProp, pk=pk)
+        flow = obj.flow
         title = obj.title
 
         #PARAMS
@@ -77,9 +77,14 @@ class FlowGraphView(View):
         if (request.GET.get("download")):
             dl = True
 
+        #get additionnal info for step_default options
+        options = {
+            'cosmic_end': obj.cosmic_end
+        }
+
         #generate image using the genGraph method
         render_path = './sims/graph/outputs/'
-        genGraph(flow=flow, title=title, path=render_path, format=format)
+        genGraph(flow=flow, title=title, path=render_path, format=format, **options)
         full_path = render_path + title + '.' + format
 
         response = FileResponse(open(full_path, 'rb'), as_attachment = dl)
