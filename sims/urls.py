@@ -22,6 +22,10 @@ urlpatterns = [
     path('props/<int:pk>/delete/', SimPropDeleteView.as_view(), name='sim_prop-delete'),
     #detail
     path('props/<int:pk>/', SimPropDetailView.as_view(), name='sim_prop-detail'),
-    #generate properties file
-    path('props/<int:pk>/dl/', SimScriptView.as_view(), name='sim_script-dl')
+    #generate evolution script
+    path('props/<int:pk>/dl/', SimScriptView.as_view(), name='sim_script-dl'),
+    #send and run evolution script on cluster
+    path('props/<int:pk>/evolve/', SimEvolView.as_view(), name='sim_evolve'),
+    #success page - get logs and results from evolution
+    path('props/<int:pk>/evolve/success/', SimEvolSuccessView.as_view(), name='sim_evolve-success')
 ]

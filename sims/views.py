@@ -1,6 +1,7 @@
+#django specific
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, FileResponse
-from django.urls import reverse_lazy
+from django.http import HttpResponse, FileResponse, HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
 from django.template.loader import get_template
 from django.views.generic import (
     CreateView,
@@ -10,10 +11,13 @@ from django.views.generic import (
     DeleteView,
     View
 )
+#models & forms
 from .models import Flow, SimProp
-from .forms import FlowForm
+from .forms import FlowForm, SlurmForm
+#custom functions
 from .graph.genGraph import genGraph
 from .properties.genScript import genScript
+from .evolve.manage_job import run_sim
 
 # Create your views here.
 #these are class based views. Django recommends these.
@@ -98,14 +102,6 @@ class SimPropCreateView(CreateView):
     template_name = 'sim_props/sim_prop_create.html'
     fields = ['title', 'metallicity', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
 
-class SimPropDetailView(DetailView):
-    """Used to display details of a simulation properties object."""
-    template_name = 'sim_props/sim_prop_detail.html'
-    model = SimProp
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 class SimPropListView(ListView):
     """Used to list al sim. props. with their title, and primary key
@@ -127,13 +123,70 @@ class SimPropDeleteView(DeleteView):
 
 
 class SimScriptView(View):
-    def get(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
+    def generateScript(pk):
         obj = get_object_or_404(SimProp, pk=pk)
         #generate simulation script
-        filename = 'script.py'
+        filename = obj.title+'.py'
         filepath = './sims/properties/outputs/' + filename
         genScript(obj,filepath)
 
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        generateScript(pk)
         response = FileResponse(open(filepath, 'rb'), as_attachment = True)
         return response
+
+
+class SimPropDetailView(DetailView):
+    """Used to display details of a simulation properties object."""
+    template_name = 'sim_props/sim_prop_detail.html'
+    model = SimProp
+    # form_class = SlurmForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class SimEvolView(View):
+    # form_class = SlurmForm
+    # template_name = 'sim_props/sim_prop_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        SimScriptView.generateScript(pk) #generate script (uses code from SimScriptView)
+        run_sim('petter.stahle@etu.unige.ch', 'Test') #execute script
+
+        return HttpResponseRedirect(reverse('sims:sim_evolve-success', kwargs={'pk': pk}))
+
+
+    #
+    # def post(self, request, *args, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     SimScriptView.generateScript(pk) #generate script (uses code from SimScriptView)
+    #     form = self.form_class(request.POST)
+    #
+    #     #debug
+    #     print(form.is_valid())
+    #
+    #     if form.is_valid():
+    #         email = form.cleaned_data('email')
+    #
+    #         ## DEBUG:
+    #         print(email)
+    #         # run_sim(email)
+    #         return HttpResponseRedirect(reverse('sims:sim_evolve-success', kwargs={'pk': pk}))
+    #         # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
+    #
+    #     # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
+    #     return render(request, 'sim_props/sim_prop_detail.html', {'form': form})
+
+
+class SimEvolSuccessView(View):
+    template_name = 'sim_props/success.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'sim_props/success.html', {})
+    # TODO
+    #add view logs functionnality
+    #add retrieve results functionnality
