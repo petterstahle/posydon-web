@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, FileResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.template.loader import get_template
+from django.conf import settings
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -12,53 +13,20 @@ from django.views.generic import (
     View
 )
 #models & forms
-from .models import Flow, SimProp
-from .forms import FlowForm, SlurmForm
+from .models import SimProp
+from .forms import SlurmForm
 #custom functions
 from .graph.genGraph import genGraph
-from .properties.genScript import genScript
 from .evolve.manage_job import run_sim
+import os
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "posydon.settings")
+
 
 # Create your views here.
 #these are class based views. Django recommends these.
 
-class FlowCreateView(CreateView):
-    """Used to create a new flow. Called when requesting /sims/create/ url."""
-    model = Flow
-    # form_class = FlowForm
-    template_name = 'flows/flow_create.html'
-    fields = ['title', 'content', 'comment']
-    # success_url = 'success'
-
-class FlowDetailView(DetailView):
-    """Used to display details of a flow."""
-    template_name = 'flows/flow_detail.html'
-    model = Flow
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-class FlowListView(ListView):
-    """Used to list al flows with their title, and primary key
-    Called when requesting /sims/,
-    Returns flow_list.html template"""
-    template_name = 'flows/flow_list.html'
-    queryset = Flow.objects.all()
-
-class FlowUpdateView(UpdateView):
-    model = Flow
-    fields = ['title', 'content', 'comment']
-    template_name = 'flows/flow_update.html'
-
-class FlowDeleteView(DeleteView):
-    model = Flow
-    template_name = 'flows/flow_delete.html'
-    success_url = reverse_lazy('sims:flow-list')
-
-
-
-class FlowGraphView(View):
+class SimPropGraphView(View):
     """When /sims/<id>/graph url is requested, this view generates an image of the flow graph with the flow from a given SimProp object.
     By default, it displays .png file
     options: download, change format to pdf
@@ -123,16 +91,9 @@ class SimPropDeleteView(DeleteView):
 
 
 class SimScriptView(View):
-    def generateScript(pk):
-        obj = get_object_or_404(SimProp, pk=pk)
-        #generate simulation script
-        filename = obj.title+'.py'
-        filepath = './sims/properties/outputs/' + filename
-        genScript(obj,filepath)
-
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
-        generateScript(pk)
+        filepath = generateScript(pk)
         response = FileResponse(open(filepath, 'rb'), as_attachment = True)
         return response
 
@@ -154,10 +115,10 @@ class SimEvolView(View):
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
-        SimScriptView.generateScript(pk) #generate script (uses code from SimScriptView)
+        filepath = generateScript(pk) #generate script (uses code from SimScriptView)
         run_sim('petter.stahle@etu.unige.ch', 'Test') #execute script
 
-        return HttpResponseRedirect(reverse('sims:sim_evolve-success', kwargs={'pk': pk}))
+        return HttpResponseRedirect(reverse('sims:sim-results', kwargs={'pk': pk}))
 
 
     #
@@ -175,18 +136,42 @@ class SimEvolView(View):
     #         ## DEBUG:
     #         print(email)
     #         # run_sim(email)
-    #         return HttpResponseRedirect(reverse('sims:sim_evolve-success', kwargs={'pk': pk}))
+    #         return HttpResponseRedirect(reverse('sims:sim_results', kwargs={'pk': pk}))
     #         # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
     #
     #     # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
     #     return render(request, 'sim_props/sim_prop_detail.html', {'form': form})
 
 
-class SimEvolSuccessView(View):
-    template_name = 'sim_props/success.html'
+class SimResultsView(View):
+    template_name = 'sim_props/results.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'sim_props/success.html', {})
+        return render(request, 'sim_props/results.html', {})
     # TODO
     #add view logs functionnality
     #add retrieve results functionnality
+
+
+#ENCAPSULATION FUNCTIONS
+def generateScript(id):
+    """This encapsulation function is used to generate the python script of a given simulation properties object using the genScript function defined in sims/properties/genScript.py.
+
+    Parameters
+    ----------
+    id : int
+        Id of the SimulationProperties model object from which we generate the script.
+
+    Returns
+    ----------
+    filepath: string
+        Path to the generated script.
+    """
+    from .properties.genScript import genScript
+    obj = get_object_or_404(SimProp, pk=id)
+    #generate simulation script
+    filename = obj.title+'.py'
+    filepath = os.path.join(settings.BASE_DIR, 'sims/properties/outputs/'+filename)
+    genScript(obj,filepath)
+
+    return filepath

@@ -29,13 +29,13 @@
 
 <li><a href="{% url 'sims:sim_prop-update' object.id %}">Update arguments.</a></li>
 
-<li>Click <a href="{% url 'sims:flow-graph' object.id %}">here</a> to display flow graph, or <a href="{% url 'sims:flow-graph' object.id %}?format=pdf&download=true">download pdf.</a></li>
+<li>Click <a href="{% url 'sims:sim_prop-graph' object.id %}">here</a> to display flow graph, or <a href="{% url 'sims:sim_prop-graph' object.id %}?format=pdf&download=true">download pdf.</a></li>
 <li>Click <a href="{% url 'sims:sim_script-dl' object.id %}">here</a> to dowload python evolution script.</li>
 
 <p>Submit to cluster and run simulation.<br>
-<li><a href="{% url 'sims:sim_evolve' object.id %}">Run sim.</a></li>
+<li><a href="{% url 'sims:sim-evolve' object.id %}">Run sim.</a></li>
 <!-- Enter email adress to get notified on job status.
-<form action="{% url 'sims:sim_evolve' object.id %}" method="post">
+<form action="{% url 'sims:sim-evolve' object.id %}" method="post">
     {% csrf_token %}
     {{ form.as_ul }}
     <label for="email">Email: </label>
