@@ -6,8 +6,7 @@
 
 <h3>Please check your email to make sure your job has effectively started. If this is not the case, view log files below to check for issues.</h3>
 
-<p>View log files</p>
-<p>View simulation results</p>
-
+<li>Click <a href="{% url 'sims:sim-results' object.id %}?get-results=true">here</a> to download simulation results (serialised .pkl file).</li>
+<li>Click <a href="{% url 'sims:sim-results' object.id %}?log=true">here</a> to view log files, or <a href="{% url 'sims:sim-results' object.id %}?log=true&download=true">download txt.</a></li>
 
 {% endblock %}

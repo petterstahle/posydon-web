@@ -17,7 +17,8 @@ from .models import SimProp
 from .forms import SlurmForm
 #custom functions
 from .graph.genGraph import genGraph
-from .evolve.manage_job import run_sim
+from .properties.genScript import genScript
+from .evolve.manage_job import run_sim, pull_results, gen_log
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "posydon.settings")
@@ -84,18 +85,11 @@ class SimPropUpdateView(UpdateView):
     fields = ['title', 'metallicity', 'flow', 'cosmic_end', 'cosmic_evolve_dict', 'mesa_mechanism', 'mesa_sigma_kick', 'mesa_mass_central_BH', 'mesa_neutrino_mass_loss', 'mesa_PISN', 'mesa_log_scale', 'mesa_verbose', 'step_end', 'max_time']
     template_name = 'sim_props/sim_prop_update.html'
 
+
 class SimPropDeleteView(DeleteView):
     model = SimProp
     template_name = 'sim_props/sim_prop_delete.html'
     success_url = reverse_lazy('sims:sim_prop-list')
-
-
-class SimScriptView(View):
-    def get(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        filepath = generateScript(pk)
-        response = FileResponse(open(filepath, 'rb'), as_attachment = True)
-        return response
 
 
 class SimPropDetailView(DetailView):
@@ -109,18 +103,28 @@ class SimPropDetailView(DetailView):
         return context
 
 
+class SimScriptView(View):
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        obj = get_object_or_404(SimProp, pk=pk)
+        filepath = genScript(obj) #generate script
+        response = FileResponse(open(filepath, 'rb'), as_attachment = True)
+        return response
+
+
 class SimEvolView(View):
     # form_class = SlurmForm
     # template_name = 'sim_props/sim_prop_detail.html'
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
-        filepath = generateScript(pk) #generate script (uses code from SimScriptView)
-        run_sim('petter.stahle@etu.unige.ch', 'Test') #execute script
+        obj = get_object_or_404(SimProp, pk=pk)
+        script_path = genScript(obj) #generate script
+        run_sim('petter.stahle@etu.unige.ch', pk) #execute script
 
         return HttpResponseRedirect(reverse('sims:sim-results', kwargs={'pk': pk}))
 
-
+        ## TODO: add email functionnality for post request.
     #
     # def post(self, request, *args, **kwargs):
     #     pk = self.kwargs.get('pk')
@@ -147,31 +151,21 @@ class SimResultsView(View):
     template_name = 'sim_props/results.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'sim_props/results.html', {})
-    # TODO
-    #add view logs functionnality
-    #add retrieve results functionnality
+        pk = self.kwargs.get('pk')
+        object = get_object_or_404(SimProp, pk=pk)
+        sim_dir = os.path.join(settings.BASE_DIR, 'sims/evolve/outputs/'+str(pk))
+        response = render(request, 'sim_props/results.html', {'object': object}) #default results page
 
+        #if user wants to get log files
+        if (request.GET.get("log")):
+            log_path = gen_log(pk) #generate and retrieve log file
+            dl = False
+            if (request.GET.get("download")): #if user wants to download
+                dl = True
+            response = FileResponse(open(log_path, 'rb'), as_attachment = dl)
 
-#ENCAPSULATION FUNCTIONS
-def generateScript(id):
-    """This encapsulation function is used to generate the python script of a given simulation properties object using the genScript function defined in sims/properties/genScript.py.
-
-    Parameters
-    ----------
-    id : int
-        Id of the SimulationProperties model object from which we generate the script.
-
-    Returns
-    ----------
-    filepath: string
-        Path to the generated script.
-    """
-    from .properties.genScript import genScript
-    obj = get_object_or_404(SimProp, pk=id)
-    #generate simulation script
-    filename = obj.title+'.py'
-    filepath = os.path.join(settings.BASE_DIR, 'sims/properties/outputs/'+filename)
-    genScript(obj,filepath)
-
-    return filepath
+        #if user wants to download results
+        if (request.GET.get("get-results")):
+            results_path = pull_results(pk)
+            response = FileResponse(open(results_path, 'rb'), as_attachment = True)
+        return response

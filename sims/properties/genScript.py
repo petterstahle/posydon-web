@@ -1,14 +1,25 @@
-def genScript(obj, filepath):
+import os
+from django.conf import settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "posydon.settings")
+
+def genScript(obj):
     """This procedure generates the python script for running a binaries evolution simulation.
 
     Parameters
     ----------
     obj : SimProp object
         Database model which contains the info for SimulationProperties.
-    filepath : string
-        Path where the .py file is written.
-        
+
+
     """
+    #PATH INITIALISATION
+    #create (unique) directory with primary key (object.id)
+    dir_path = os.path.join(settings.BASE_DIR, 'sims/properties/outputs/'+str(obj.id)+'/')
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    script_path = dir_path+'script.py'
+
+
     #generate string blocks
     imports = """import numpy as np
 import pickle
@@ -68,6 +79,7 @@ with open('./BBHs-population.pkl', 'wb') as file:
     buffer = imports + '\n\n' + metallicity_block + '\n\n' + model_block + '\n\n' + end_block + '\n\n' + simprop_block + '\n\n' + binaries_block
 
     #generate script
-    with open(filepath,'w') as f:
+    with open(script_path,'w') as f:
         f.write(buffer)
-        f.close()
+
+    return script_path
