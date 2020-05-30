@@ -113,7 +113,7 @@ class SimScriptView(View):
 
 
 class SimEvolView(View):
-    # form_class = SlurmForm
+    form_class = SlurmForm
     # template_name = 'sim_props/sim_prop_detail.html'
 
     def get(self, request, *args, **kwargs):
@@ -124,27 +124,19 @@ class SimEvolView(View):
 
         return HttpResponseRedirect(reverse('sims:sim-results', kwargs={'pk': pk}))
 
-        ## TODO: add email functionnality for post request.
-    #
-    # def post(self, request, *args, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     SimScriptView.generateScript(pk) #generate script (uses code from SimScriptView)
-    #     form = self.form_class(request.POST)
-    #
-    #     #debug
-    #     print(form.is_valid())
-    #
-    #     if form.is_valid():
-    #         email = form.cleaned_data('email')
-    #
-    #         ## DEBUG:
-    #         print(email)
-    #         # run_sim(email)
-    #         return HttpResponseRedirect(reverse('sims:sim_results', kwargs={'pk': pk}))
-    #         # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
-    #
-    #     # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
-    #     return render(request, 'sim_props/sim_prop_detail.html', {'form': form})
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        obj = get_object_or_404(SimProp, pk=pk)
+        script_path = genScript(obj) #generate script
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            run_sim(email, pk) #run simulation
+            return HttpResponseRedirect(reverse('sims:sim-results', kwargs={'pk': pk}))
+
+        # return HttpResponseRedirect(reverse('sims:sim_prop-detail', kwargs={'pk': pk}))
+        return render(request, 'sim_props/sim_prop_detail.html', {'object':obj, 'form':form})
 
 
 class SimResultsView(View):
@@ -168,4 +160,6 @@ class SimResultsView(View):
         if (request.GET.get("get-results")):
             results_path = pull_results(pk)
             response = FileResponse(open(results_path, 'rb'), as_attachment = True)
+
+        ## TODO: Add functionnality to view number of black holes found on page?
         return response

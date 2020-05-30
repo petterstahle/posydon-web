@@ -5,6 +5,7 @@
 <li>Retrieve job info here when you've received an email confirming job completion from the baobab cluster.</li>
 
 <h3>Please check your email to make sure your job has effectively started. If this is not the case, view log files below to check for issues.</h3>
+<p><font color="red">WARNING: In the current version of this web-app, requesting these files may cause errors if a they do not exist (i.e. have not yet been created, because a job has not been completed or was not submitted succesfully.</font><p>
 
 <li>Click <a href="{% url 'sims:sim-results' object.id %}?get-results=true">here</a> to download simulation results (serialised .pkl file).</li>
 <li>Click <a href="{% url 'sims:sim-results' object.id %}?log=true">here</a> to view log files, or <a href="{% url 'sims:sim-results' object.id %}?log=true&download=true">download txt.</a></li>

@@ -33,15 +33,16 @@
 <li>Click <a href="{% url 'sims:sim_script-dl' object.id %}">here</a> to dowload python evolution script.</li>
 
 <p>Submit to cluster and run simulation.<br>
-<li><a href="{% url 'sims:sim-evolve' object.id %}">Run sim.</a></li>
-<!-- Enter email adress to get notified on job status.
-<form action="{% url 'sims:sim-evolve' object.id %}" method="post">
+<!-- <li><a href="{% url 'sims:sim-evolve' object.id %}">Run sim.</a></li> -->
+Enter email adress to get notified on job status.<br>
+<form action='{% url 'sims:sim-evolve' object.id %}' method='POST'>
     {% csrf_token %}
     {{ form.as_ul }}
-    <label for="email">Email: </label>
-    <input id="email" type="email" name="submit_run">
-    <input type="submit" value="Submit and run">
-</form> -->
+    <!-- <label for="email">Email: </label>
+    <input id="email" type="email" name="submit_run"> -->
+    <input type='email' name='email' placeholder="Your Email" value='Submit and run'>
+    <button type='submit'>Submit and run</button>
+</form>
 </p>
 
 <li><a href="{% url 'sims:sim_prop-delete' object.id %}">Delete object.</a></li>
