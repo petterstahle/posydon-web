@@ -3,3 +3,6 @@
 _build
 _static
 _templates
+docs/Makefile
+docs/make.bat
+
