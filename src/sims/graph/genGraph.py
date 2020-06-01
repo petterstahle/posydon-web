@@ -1,5 +1,8 @@
-"""This python file is used to take a simulation flow and generate its
-associated graph. The main function genGraph is called from the FlowGraphView view function, and uses the parseFlow_dict() method for parsing a flow into the desired fields, and the genGraphHelper() method for generating a graph from the given flow fields.
+"""
+Module genGraph
+===============
+This python module is used to take a simulation flow and generate its
+associated graph. The main function genGraph is called from the SimPropGraphView view function, and uses the parseFlow_dict() method for parsing a flow into the desired fields, and the genGraphHelper() method for generating a graph from the given flow fields.
 This script requires a step_default dictionary to be defined. It contains the list of steps and their corresponding bubbles.
 It uses the graphviz library and its Digraph method for generating graphs from dot files. """
 
@@ -146,16 +149,31 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
 
 
 def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
-    """Function used to generate graph from a flow with correct format.
+    """Used to generate graph from a flow with correct format.
+
     Uses parseFlow_dict and genGraphHelper helper functions.
-    Uses the step_default dictionary, which maps bubbles to their default corresponding parent step
-    Arguments:
-    -flow: flow as dictionary with correct format, see examples below.
-    -title: name of image
-    -path: path where image is to be generated. Default is /sims/graph/outputs
-    -format: format of image (must be supported by Digraph method), default is .png (better suited for web)
-    Returns nothing
+    Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.
+
+    Parameters
+    ----------
+    flow : dict
+        Simulation flow as dictionary with correct format, see examples below..
+    title : string
+        Name of image to be generated.
+    path : string
+        Path where image is to be generated. Default is /sims/graph/outputs`.
+    format : string
+        Format of image (must be supported by Digraph method), default is .png, can also be pdf.
+    **kwargs : dict
+        Dictionnary of keyword arguments describing the step_default dictionary.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
     """
+    
     flow_parsed = None
     # if flow is a string, transform it to a dict
     if isinstance(flow, str):

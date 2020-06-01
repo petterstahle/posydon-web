@@ -10,7 +10,8 @@ Welcome to posydon-web's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   setup
+   genGraph
 
 Indices and tables
 ==================
