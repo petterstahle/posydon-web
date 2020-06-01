@@ -1,0 +1,5 @@
+# add files to be ignored for this branch
+
+_build
+_static
+_templates
