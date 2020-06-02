@@ -4,7 +4,8 @@ Get started
 Follow these step-by-step instructions to setup the Django server (This is for development. See https://docs.djangoproject.com/en/3.0/topics/install/ for more info).
 
 1. Set up a virtual environment (Linux & macOS).
-   For this step, it is recommended to use pip with the python module *virtualenv*. This step (and step 3 for activating the virtual environment) follows the documentation on https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/ (see this page for more info or for a Windows setup). Anaconda can also be used if needed (see https://www.anaconda.com/blog/using-pip-in-a-conda-environment in this case and skip this section) .
+   For this step, it is recommended to use pip with the python module *virtualenv*. This step (and step 3 for activating the virtual environment) follows the documentation on https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/ (see this page for more info or for a Windows setup).
+   Anaconda can also be used if needed (see https://www.anaconda.com/blog/using-pip-in-a-conda-environment in this case and skip this section).
    * install `pip`:
    `python3 -m pip install --user --upgrade pip`
    * install `virtualenv` (already included as of Python 3.3 as *venv*):
