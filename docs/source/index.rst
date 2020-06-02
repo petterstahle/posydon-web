@@ -6,12 +6,20 @@
 Welcome to posydon-web's documentation!
 =======================================
 
+Introduction
+------------
+
+This web-app has been developed using the `Django <https://www.djangoproject.com/>`_ framework. It's purpose it to handle simulations from the Posydon library in a semi-automated process to make it easier for users to evolve stellar binaries and manage their simulation flow.
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    setup
+   description
    genGraph
+   SimProp
 
 Indices and tables
 ==================
