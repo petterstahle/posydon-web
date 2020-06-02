@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Set-up Guide &mdash; posydon-web 0.1 documentation</title>
+  <title>Get started &mdash; posydon-web 0.1 documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Set-up Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Get started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genGraph.html">Module genGraph</a></li>
 </ul>
 
@@ -129,7 +129,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Set-up Guide</li>
+      <li>Get started</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,9 +148,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="set-up-guide">
-<h1>Set-up Guide<a class="headerlink" href="#set-up-guide" title="Permalink to this headline">¶</a></h1>
-<p>Follow these step-by-step instructions to setup Django server (for developpment).</p>
+  <div class="section" id="get-started">
+<h1>Get started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h1>
+<p>Follow these step-by-step instructions to setup the Django server (This is for development. See <a class="reference external" href="https://docs.djangoproject.com/en/3.0/topics/install/">https://docs.djangoproject.com/en/3.0/topics/install/</a> for more info).</p>
+<ol class="arabic simple">
+<li><p>Set up a virtual environment (Linux &amp; macOS).
+For this step, it is recommended to use pip with the python module <em>virtualenv</em>. This step (and step 3 for activating the virtual environment) follows the documentation on <a class="reference external" href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/</a> (see this page for more info or for a Windows setup). Anaconda can also be used if needed (see <a class="reference external" href="https://www.anaconda.com/blog/using-pip-in-a-conda-environment">https://www.anaconda.com/blog/using-pip-in-a-conda-environment</a> in this case and skip this section) .
+* install <cite>pip</cite>:
+<cite>python3 -m pip install –user –upgrade pip</cite>
+* install <cite>virtualenv</cite> (already included as of Python 3.3 as <em>venv</em>):
+<cite>python3 -m pip install –user virtualenv</cite>
+* create virtual environment:
+<cite>python3 -m venv env</cite>
+venv will create a virtual Python installation in the <cite>env</cite> folder.</p></li>
+<li><p>Clone Github repo into your <cite>env</cite> directory.</p></li>
+<li><p>Activate virtual environment.
+Before you can start installing or using packages in your virtual environment you’ll need to activate it. Activating a virtual environment will put the virtual environment-specific python and pip executables into your shell’s PATH
+* cd into your environment:
+<cite>cd env/</cite>
+* run
+<cite>source bin/activate</cite>
+Your shell prompt should now show <cite>(env) user&#64;localhost:/&lt;path-to-env&gt;/env/</cite>
+You can leave the virtual environment any time by simply running:
+<cite>deactivate</cite></p></li>
+<li><p>Install project dependencies.
+Here you will actually install the required packages for the project, listed in the <cite>requirements.txt</cite> file in the <cite>docs</cite> folder.
+* cd into the project root (local git repo, contains a <cite>docs/</cite> and a <cite>src/</cite> directory)
+* install dependencies with:
+<cite>pip install -r docs/requirements.txt</cite></p></li>
+</ol>
 </div>
 
 
