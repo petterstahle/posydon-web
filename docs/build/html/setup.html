@@ -151,31 +151,56 @@
   <div class="section" id="get-started">
 <h1>Get started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h1>
 <p>Follow these step-by-step instructions to setup the Django server (This is for development. See <a class="reference external" href="https://docs.djangoproject.com/en/3.0/topics/install/">https://docs.djangoproject.com/en/3.0/topics/install/</a> for more info).</p>
-<ol class="arabic simple">
-<li><p>Set up a virtual environment (Linux &amp; macOS).
-For this step, it is recommended to use pip with the python module <em>virtualenv</em>. This step (and step 3 for activating the virtual environment) follows the documentation on <a class="reference external" href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/</a> (see this page for more info or for a Windows setup). Anaconda can also be used if needed (see <a class="reference external" href="https://www.anaconda.com/blog/using-pip-in-a-conda-environment">https://www.anaconda.com/blog/using-pip-in-a-conda-environment</a> in this case and skip this section) .
-* install <cite>pip</cite>:
-<cite>python3 -m pip install –user –upgrade pip</cite>
-* install <cite>virtualenv</cite> (already included as of Python 3.3 as <em>venv</em>):
-<cite>python3 -m pip install –user virtualenv</cite>
-* create virtual environment:
-<cite>python3 -m venv env</cite>
-venv will create a virtual Python installation in the <cite>env</cite> folder.</p></li>
-<li><p>Clone Github repo into your <cite>env</cite> directory.</p></li>
-<li><p>Activate virtual environment.
-Before you can start installing or using packages in your virtual environment you’ll need to activate it. Activating a virtual environment will put the virtual environment-specific python and pip executables into your shell’s PATH
-* cd into your environment:
-<cite>cd env/</cite>
-* run
-<cite>source bin/activate</cite>
-Your shell prompt should now show <cite>(env) user&#64;localhost:/&lt;path-to-env&gt;/env/</cite>
-You can leave the virtual environment any time by simply running:
-<cite>deactivate</cite></p></li>
-<li><p>Install project dependencies.
-Here you will actually install the required packages for the project, listed in the <cite>requirements.txt</cite> file in the <cite>docs</cite> folder.
-* cd into the project root (local git repo, contains a <cite>docs/</cite> and a <cite>src/</cite> directory)
-* install dependencies with:
-<cite>pip install -r docs/requirements.txt</cite></p></li>
+<ol class="arabic">
+<li><p><strong>Set up a virtual environment</strong> (Linux &amp; macOS).</p>
+<p>For this step, it is recommended to use pip with the python module <em>virtualenv</em>. This step (and step 3 for activating the virtual environment) follows the documentation on <a class="reference external" href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/</a> (see this page for more info or for a Windows setup).
+Anaconda can also be used if needed (see <a class="reference external" href="https://www.anaconda.com/blog/using-pip-in-a-conda-environment">https://www.anaconda.com/blog/using-pip-in-a-conda-environment</a> in this case and skip this section).</p>
+<ul>
+<li><p>install <code class="docutils literal notranslate"><span class="pre">pip</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+</pre></div>
+</div>
+</li>
+<li><p>install <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> (already included as of Python 3.3 as <code class="docutils literal notranslate"><span class="pre">venv</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">virtualenv</span>
+</pre></div>
+</div>
+</li>
+<li><p>create virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">env</span>
+</pre></div>
+</div>
+<p>venv will create a virtual Python installation in the <code class="docutils literal notranslate"><span class="pre">env</span></code> folder.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Import project.</strong></p>
+<p>Clone Github repo into your <code class="docutils literal notranslate"><span class="pre">env</span></code> directory.</p>
+</li>
+<li><p><strong>Activate virtual environment.</strong></p>
+<p>Before you can start installing or using packages in your virtual environment you’ll need to activate it. Activating a virtual environment will put the virtual environment-specific python and pip executables into your shell’s PATH</p>
+<ul>
+<li><p>cd into your environment: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">env/</span></code></p></li>
+<li><p>run: <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">bin/activate</span></code>
+Your shell prompt should now display <code class="docutils literal notranslate"><span class="pre">(env)</span> <span class="pre">user&#64;localhost:/&lt;path-to-env&gt;/env/</span></code></p>
+<p>You can leave the virtual environment any time by simply running:
+<code class="docutils literal notranslate"><span class="pre">deactivate</span></code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Install project dependencies.</strong></p>
+<p>Here you will install the required packages for the project, listed in the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file in the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> folder.</p>
+<ul>
+<li><p>cd into the project root (local git repo, contains a <cite>docs/</cite> and an <cite>src/</cite> directory)</p></li>
+<li><p>install dependencies with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">docs</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Setup the Django admin.</strong></p></li>
+<li><p><strong>Run server.</strong></p></li>
 </ol>
 </div>
 
