@@ -3,10 +3,13 @@ Flow visualization
 
 This section describes the process to visualize a simulation flow.
 
-When the url ``<posydon-web-addr>/sims/<id>/graph`` is requested, this will make the server render the image using the genGraph module.
+When the url ``<posydon-web-addr>/sims/<id>/graph`` is requested, this will make the server render the image using the genGraph module located in ``src/sims/graph/genGraph.py``.
 
 *Option*: You can also add the following options in the url to download the image as a pdf:
    ``<posydon-web-addr>/sims/2/graph/?format=pdf&download=true``
+
+**Storage**:
+   The default path for generated graphs is in the following directory: ``src/sims/graph/outputs/``, and each graph is identified by the title field of its corresponding ``SimProp`` *simulation properties* object.
 
 .. automodule:: sims.graph.genGraph
    :members: genGraph

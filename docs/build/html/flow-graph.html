@@ -167,9 +167,11 @@
   <div class="section" id="flow-visualization">
 <h1><span class="section-number">1. </span>Flow visualization<a class="headerlink" href="#flow-visualization" title="Permalink to this headline">¶</a></h1>
 <p>This section describes the process to visualize a simulation flow.</p>
-<p>When the url <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/graph</span></code> is requested, this will make the server render the image using the genGraph module.</p>
+<p>When the url <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/graph</span></code> is requested, this will make the server render the image using the genGraph module located in <code class="docutils literal notranslate"><span class="pre">src/sims/graph/genGraph.py</span></code>.</p>
 <dl class="simple">
 <dt><em>Option</em>: You can also add the following options in the url to download the image as a pdf:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/2/graph/?format=pdf&amp;download=true</span></code></p>
+</dd>
+<dt><strong>Storage</strong>:</dt><dd><p>The default path for generated graphs is in the following directory: <code class="docutils literal notranslate"><span class="pre">src/sims/graph/outputs/</span></code>, and each graph is identified by the title field of its corresponding <code class="docutils literal notranslate"><span class="pre">SimProp</span></code> <em>simulation properties</em> object.</p>
 </dd>
 </dl>
 <span class="target" id="module-sims.graph.genGraph"></span><div class="section" id="module-gengraph">
