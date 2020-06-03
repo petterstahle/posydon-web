@@ -1,2 +1,0 @@
-.. autoclass:: models.SimProp
-   :members:

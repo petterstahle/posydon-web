@@ -86,14 +86,18 @@
 <li class="toctree-l1 current"><a class="reference internal" href="description.html">Description</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="description.html#the-django-app-structure">The Django app structure</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="description.html#posydon-web-functionalities">Posydon-web functionalities</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Simulation flow visualization.</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">1. Simulation flow visualization.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-gengraph">1.1. Module genGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-a-flow-with-correct-format">1.2. Example of a flow with correct format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-step-default-dictionary">1.3. Example of step_default dictionary</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="script-gen.html">2. Binary evolution script generation.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sim-handler.html">3. Simulation handling.</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="genGraph.html">Module genGraph</a></li>
 </ul>
 
             
@@ -162,6 +166,72 @@
             
   <div class="section" id="flow-visualization">
 <h1><span class="section-number">1. </span>Flow visualization<a class="headerlink" href="#flow-visualization" title="Permalink to this headline">¶</a></h1>
+<p>This section describes the process to visualize a simulation flow.</p>
+<p>When the url <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/graph</span></code> is requested, this will make the server render the image using the genGraph module:</p>
+<span class="target" id="module-sims.graph.genGraph"></span><div class="section" id="module-gengraph">
+<h2><span class="section-number">1.1. </span>Module genGraph<a class="headerlink" href="#module-gengraph" title="Permalink to this headline">¶</a></h2>
+<p>This python module is used to take a simulation flow and generate its
+associated graph. The main function genGraph is called from the SimPropGraphView view function, and uses the parseFlow_dict() method for parsing a flow into the desired fields, and the genGraphHelper() method for generating a graph from the given flow fields.
+This script requires a step_default dictionary to be defined. It contains the list of steps and their corresponding bubbles.
+It uses the graphviz library and its Digraph method for generating graphs from dot files.</p>
+<dl class="py function">
+<dt id="sims.graph.genGraph.genGraph">
+<code class="sig-prename descclassname">sims.graph.genGraph.</code><code class="sig-name descname">genGraph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flow</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'graph'</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'./outputs/'</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'png'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sims.graph.genGraph.genGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to generate graph from a flow with correct format.</p>
+<p>Uses parseFlow_dict and genGraphHelper helper functions.
+Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow</strong> (<em>dict</em>) – Simulation flow as dictionary with correct format, see examples below..</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – Name of image to be generated.</p></li>
+<li><p><strong>path</strong> (<em>string</em>) – Path where image is to be generated. Default is /sims/graph/outputs`.</p></li>
+<li><p><strong>format</strong> (<em>string</em>) – Format of image (must be supported by Digraph method), default is .png, can also be pdf.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – Dictionnary of keyword arguments describing the step_default dictionary.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="example-of-a-flow-with-correct-format">
+<h2><span class="section-number">1.2. </span>Example of a flow with correct format<a class="headerlink" href="#example-of-a-flow-with-correct-format" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">flow</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">(</span><span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="s1">&#39;MS&#39;</span><span class="p">,</span> <span class="s1">&#39;ZAMS&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_COSMIC&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;HeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_mesa&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;PostHeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_mesa&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;HeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_end&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;PostHeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_end&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;PostHeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_end&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_end&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;detached&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span> <span class="s1">&#39;step_end&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-of-step-default-dictionary">
+<h2><span class="section-number">1.3. </span>Example of step_default dictionary<a class="headerlink" href="#example-of-step-default-dictionary" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">step_default</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s1">&#39;step_zams&#39;</span><span class="p">:{</span><span class="s1">&#39;CO+He&#39;</span><span class="p">:[</span>
+ <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;HeMS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;HeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;PostHeMS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;PostHeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;HeMS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;HeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;PostHeMS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;PostHeMS&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">)]},</span>
+ <span class="s1">&#39;step_mesa&#39;</span><span class="p">:[</span>
+ <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;BH&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;BH&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;NS&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;NS&#39;</span><span class="p">,</span> <span class="s1">&#39;WD&#39;</span><span class="p">),</span>
+ <span class="p">]</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

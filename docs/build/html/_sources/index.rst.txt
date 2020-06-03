@@ -13,13 +13,11 @@ This web-app has been developed using the `Django <https://www.djangoproject.com
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    setup
    description
-   genGraph
-   SimProp
 
 Indices and tables
 ==================

@@ -1,4 +1,8 @@
-"""These are the definitions of the models (as classes) for the objects stored in the database.
+"""
+Module Models
+=============
+
+These are the definitions of the models (as classes) for the objects stored in the database.
 Contains the SimProp model."""
 
 from django.db import models
@@ -7,7 +11,9 @@ from django.urls import reverse
 # Create your models here.
 
 class SimProp(models.Model):
-    """Django database model representing a set of simulation properties for a given simulation. An instance of this model class will be given a primary key, which will serve as its unique identifier for simulations."""
+    """Django database model representing a set of simulation properties for a given simulation. An instance of this model class will be given a primary key, which will serve as its unique identifier for simulations.
+    """
+
     #title: title to document the flow (ex. "flow1", "bob's flow",etc...)
     title = models.CharField(max_length=30)
 
