@@ -35,7 +35,6 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="Models.html" />
     <link rel="prev" title="2. Evolution script generation" href="script-gen.html" /> 
 </head>
 
@@ -88,12 +87,14 @@
 <li class="toctree-l2 current"><a class="reference internal" href="description.html#posydon-web-functionalities">Posydon-web functionalities</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="flow-graph.html">1. Simulation flow visualization.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script-gen.html">2. Binary evolution script generation.</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">3. Simulation handling.</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3. Simulation handling.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-manage-job">3.1. Module manage_job</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="genGraph.html">Module genGraph</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -162,6 +163,145 @@
             
   <div class="section" id="simulation-handling">
 <h1><span class="section-number">3. </span>Simulation handling<a class="headerlink" href="#simulation-handling" title="Permalink to this headline">¶</a></h1>
+<p>This script describes the usage and process for executing simulations and handling results or logs of a given simulation.
+Simulations are run remotely on a HPC cluster (in this case the <a class="reference external" href="https://baobab.unige.ch/enduser/src/enduser/access.html">Baobab</a> cluster hosted by the University of Geneva).</p>
+<dl>
+<dt><em>usage</em> :</dt><dd><p>From a given <em>simulation properties details</em> page, contained in <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/</span></code>, a user can request to run a simulation. To do this, the user must first submit a valid email address. This email is processed in a SLURM script and is used to notify the user when and if the simulation job has begun successfully on the cluster, as well as finished.</p>
+<p>When the simulation request has been sent, the server utilizes the manage_job module located in <code class="docutils literal notranslate"><span class="pre">src/sims/evolve/manage_job.py</span></code>. The user is then redirected to the <em>results</em> page at <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/results/</span></code>, where simulation results and log files in case of errors can be downloaded.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>In the current version of this web-app, requesting these files may cause errors if a they do not exist (i.e. have not yet been created, because a job has not been completed or was not submitted succesfully).</p>
+</div>
+</dd>
+<dt><strong>Storage</strong>:</dt><dd><p>The default path for generated results/log files is in the following directory: <code class="docutils literal notranslate"><span class="pre">src/sims/evolve/outputs/&lt;id&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">id</span></code> corresponds to the primary key of the <code class="docutils literal notranslate"><span class="pre">SimProp</span></code> <em>simulation properties</em> object.</p>
+</dd>
+</dl>
+<span class="target" id="module-sims.evolve.manage_job"></span><div class="section" id="module-manage-job">
+<h2><span class="section-number">3.1. </span>Module manage_job<a class="headerlink" href="#module-manage-job" title="Permalink to this headline">¶</a></h2>
+<p>This module is used to handle simulation execution on a remote HPC cluster and uses the subprocess module.
+This module contains 3 main functions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>run_sim</p></li>
+<li><p>pull_results</p></li>
+<li><p>gen_log</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The HPC cluster account for the web-app server must be set up with the corret configuration, or this module <strong>will not function properly</strong>, because the server will need its own Baobab account with SSH authentication keys setup. See below for the folder configuration.</p>
+</div>
+<dl>
+<dt><strong>Remote cluster configuration</strong>:</dt><dd><p>Cluster path variables are specified by the global variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REMOTE_USR</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HOST</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REMOTE_DIR</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>By default, the remote working directory containing the scripts for running a simulation and its corresponding results and log files should look like this:</p>
+<ul>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">~/POSYDON/PopSyn/</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">POSYDON</span></code> corresponds to the Posydon library, and the remote cluster will need a Conda environment with the correct dependencies.</p>
+<p>When a simulation execution is requested (i.e., <code class="docutils literal notranslate"><span class="pre">run_sim</span></code> is called), a unique folder named <code class="docutils literal notranslate"><span class="pre">id</span></code> will then be created in the PopSyn directory like this: <code class="docutils literal notranslate"><span class="pre">~/POSYDON/PopSyn/&lt;id&gt;/</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><p>If a user wants to change the remote simulation directory, the global variable <code class="docutils literal notranslate"><span class="pre">REMOTE_DIR</span></code> will need to be modified accordingly.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py data">
+<dt id="sims.evolve.manage_job.REMOTE_USR">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">REMOTE_USR</code><em class="property"> = 'stahle8'</em><a class="headerlink" href="#sims.evolve.manage_job.REMOTE_USR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Username for the client accessing BAOBAB. Should later be a specific account for the web-app itself. <strong>This value must be specified and the correponding</strong> <code class="docutils literal notranslate"><span class="pre">$HOME/</span></code> <strong>directory must be setup in the correct manner. See configuration above.</strong></p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="sims.evolve.manage_job.HOST">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">HOST</code><em class="property"> = '&#64;baobab2.hpc.unige.ch'</em><a class="headerlink" href="#sims.evolve.manage_job.HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p>BAOBAB cluster adress</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="sims.evolve.manage_job.REMOTE_DIR">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">REMOTE_DIR</code><em class="property"> = 'stahle8&#64;baobab2.hpc.unige.ch:~/POSYDON/PopSyn/'</em><a class="headerlink" href="#sims.evolve.manage_job.REMOTE_DIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory where simulation output files are located</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sims.evolve.manage_job.run_sim">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">run_sim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">email</span></em>, <em class="sig-param"><span class="n">pk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sims.evolve.manage_job.run_sim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle sending the relevant scripts to the cluster, and execute the binary evolution script from the remote server.</p>
+<p>Called by SimEvolView, when a user wants to run a simulation. This function will handle sending the relevant scripts to the cluster, and execute the binary evolution script from the remote server. Additionally, generates two log files for the standard output and error streams during the remote execution.
+Executes the following actions using the subprocess module:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>copy the generated population synthesis script contained in <code class="docutils literal notranslate"><span class="pre">sims/properties/outputs/&lt;id&gt;/script.py</span></code> to the Unige Baobab cluster at <code class="docutils literal notranslate"><span class="pre">user&#64;baobab2.hpc.unige.ch:/~/POSYDON/PopSyn/&lt;id&gt;/</span></code></p></li>
+<li><p>write <code class="docutils literal notranslate"><span class="pre">SLURM</span></code> script (with email adress contained as parameter) and send to cluster. Uses the helper function <code class="docutils literal notranslate"><span class="pre">write_slurm(email)</span></code>.</p></li>
+<li><p>establish ssh connection to the cluster and do:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>activate conda environment</p></li>
+<li><p>run slurm script (with <code class="docutils literal notranslate"><span class="pre">sbatch</span></code>)
+Redirects <code class="docutils literal notranslate"><span class="pre">stderr</span></code>/<code class="docutils literal notranslate"><span class="pre">stdout</span></code> to log files.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>email</strong> (<em>string</em>) – User’s email adress specified for job notification. Used to generate slurm script.</p></li>
+<li><p><strong>pk</strong> (<em>int</em>) – Represents the (unique) primary key of the SimProp object from which a simulation has been run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path to the generated local results directory.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sims.evolve.manage_job.pull_results">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">pull_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sims.evolve.manage_job.pull_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> results file corresponding to the simulation with id <code class="docutils literal notranslate"><span class="pre">pk</span></code> (primary key) from the cluster to the local server when a user wants to retrieve it. Function is called from the SimResultsView view handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pk</strong> (<em>int</em>) – Represents the (unique) primary key of the SimProp object from which a simulation has been run.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>File path of the results file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sims.evolve.manage_job.gen_log">
+<code class="sig-prename descclassname">sims.evolve.manage_job.</code><code class="sig-name descname">gen_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sims.evolve.manage_job.gen_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates one complete <code class="docutils literal notranslate"><span class="pre">log.txt</span></code> file by appending the stderr and stdout log files compiled during a simulation run on the cluster. uses the <code class="docutils literal notranslate"><span class="pre">import_logfiles(pk)</span></code> helper function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pk</strong> (<em>int</em>) – Represents the (unique) primary key of the SimProp object from which a simulation has been run.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path of generated log file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -171,8 +311,6 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Models.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="script-gen.html" class="btn btn-neutral float-left" title="2. Evolution script generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

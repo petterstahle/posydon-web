@@ -30,6 +30,41 @@ step_default = {
     }
 
 
+def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
+    """Used to generate graph from a flow with correct format.
+
+    Uses parseFlow_dict and genGraphHelper helper functions.
+    Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.
+
+    Parameters
+    ----------
+    flow : dict
+        Simulation flow as dictionary with correct format, see examples below..
+    title : string
+        Name of image to be generated.
+    path : string
+        Path where image is to be generated. Default is /sims/graph/outputs`.
+    format : string
+        Format of image (must be supported by Digraph method), default is .png, can also be pdf.
+    **kwargs : dict
+        Dictionnary of keyword arguments describing the step_default dictionary.
+
+    """
+
+    flow_parsed = None
+    # if flow is a string, transform it to a dict
+    if isinstance(flow, str):
+        flow_dict = ast.literal_eval(flow)
+        flow_parsed = parseFlow_dict(flow_dict)
+    else:
+        flow_parsed = parseFlow_dict(flow)
+    genGraphHelper(flow_parsed, title, path, format, **kwargs)
+    return
+
+
+######################
+# HELPER FUNCTIONS
+######################
 
 def parseFlow_dict(flow):
     """Parses the content of a flow given as a dictionary, used in genGraph() function.
@@ -125,44 +160,11 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
             parent_index = stepIndexes[stepParent]
             dot.edge(parent_index, bubble_index, arrowhead=default_arrowtype)
 
-
     #RENDER GRAPH
     full_path = path + title
     dot.render(full_path)
     return
 
-
-
-def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
-    """Used to generate graph from a flow with correct format.
-
-    Uses parseFlow_dict and genGraphHelper helper functions.
-    Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.
-
-    Parameters
-    ----------
-    flow : dict
-        Simulation flow as dictionary with correct format, see examples below..
-    title : string
-        Name of image to be generated.
-    path : string
-        Path where image is to be generated. Default is /sims/graph/outputs`.
-    format : string
-        Format of image (must be supported by Digraph method), default is .png, can also be pdf.
-    **kwargs : dict
-        Dictionnary of keyword arguments describing the step_default dictionary.
-
-    """
-
-    flow_parsed = None
-    # if flow is a string, transform it to a dict
-    if isinstance(flow, str):
-        flow_dict = ast.literal_eval(flow)
-        flow_parsed = parseFlow_dict(flow_dict)
-    else:
-        flow_parsed = parseFlow_dict(flow)
-    genGraphHelper(flow_parsed, title, path, format, **kwargs)
-    return
 
 
 

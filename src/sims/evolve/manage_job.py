@@ -1,31 +1,63 @@
-"""When run this script executes system calls (uses the subprocess module) to do these actions:
-    1- copy the generated population synthesis script contained in sims/properties/outputs/script.py to the Unige Baobab cluster at user@baobab2.hpc.unige.ch:/~/POSYDON/PopSyn
-    2- write slurm script (with email adress contained as parameter) and send to cluster
-    3- establish ssh connection to the cluster
-    4- activate conda environment
-    5- run slurm script (with sbatch)
+"""
+Module manage_job
+=================
+This module is used to handle simulation execution on a remote HPC cluster and uses the subprocess module.
+This module contains 3 main functions:
+
+    * run_sim
+    * pull_results
+    * gen_log
+
+.. note::
+   The HPC cluster account for the web-app server must be set up with the corret configuration, or this module **will not function properly**, because the server will need its own Baobab account with SSH authentication keys setup. See below for the folder configuration.
+
+**Remote cluster configuration**:
+    Cluster path variables are specified by the global variables:
+
+        * ``REMOTE_USR``
+        * ``HOST``
+        * ``REMOTE_DIR``
+
+    By default, the remote working directory containing the scripts for running a simulation and its corresponding results and log files should look like this:
+
+    * ``~/POSYDON/PopSyn/``
+        ``POSYDON`` corresponds to the Posydon library, and the remote cluster will need a Conda environment with the correct dependencies.
+
+        When a simulation execution is requested (i.e., ``run_sim`` is called), a unique folder named ``id`` will then be created in the PopSyn directory like this: ``~/POSYDON/PopSyn/<id>/``.
+    * If a user wants to change the remote simulation directory, the global variable ``REMOTE_DIR`` will need to be modified accordingly.
+
 """
 import subprocess, os, datetime
 from django.conf import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "posydon.settings")
 
+
+
 #GLOBAL PATH VARIABLES
-REMOTE_USR = 'stahle8' #will later be web_app user
-HOST = '@baobab2.hpc.unige.ch'  #BAOBAB cluster adress
+
+REMOTE_USR = 'stahle8'  #: Username for the client accessing BAOBAB. Should later be a specific account for the web-app itself. **This value must be specified and the correponding** ``$HOME/`` **directory must be setup in the correct manner. See configuration above.**
+HOST = '@baobab2.hpc.unige.ch'  #: BAOBAB cluster adress
+
 #these are the directories where simulation output files are located (see get_rmt_sim_dir(pk) and get_lcl_sim_dir(pk)    functions at end of script for retrieving the corresponding directory for one simulation)
-REMOTE_DIR = REMOTE_USR+HOST+':~/POSYDON/PopSyn/'
+REMOTE_DIR = REMOTE_USR+HOST+':~/POSYDON/PopSyn/'  #: Directory where simulation output files are located
 LOCAL_DIR = os.path.join(settings.BASE_DIR, 'sims/evolve/outputs/')
 
+
 def run_sim(email, pk):
-    """Called by SimEvolView, when a user wants to run a simulation. This function will handle sending the relevant scripts to the cluster, and execute the binary evolution script from the remote server. Additionally, generates two log files for the standard output and error streams during the remote execution.
+    """Handle sending the relevant scripts to the cluster, and execute the binary evolution script from the remote server.
+
+    Called by SimEvolView, when a user wants to run a simulation. This function will handle sending the relevant scripts to the cluster, and execute the binary evolution script from the remote server. Additionally, generates two log files for the standard output and error streams during the remote execution.
     Executes the following actions using the subprocess module:
-        1- copy the generated population synthesis script contained in sims/properties/outputs/<pk>/script.py to the Unige Baobab cluster at user@baobab2.hpc.unige.ch:/~/POSYDON/PopSyn/<pl>/
-        2- write slurm script (with email adress contained as parameter) and send to cluster. Uses the helper function write_slurm(email).
-        3- establish ssh connection to the cluster and do:
-            3.1- activate conda environment
-            3.2- run slurm script (with sbatch)
-            Redirects stderr/stdout to log files.
+
+        1. copy the generated population synthesis script contained in ``sims/properties/outputs/<id>/script.py`` to the Unige Baobab cluster at ``user@baobab2.hpc.unige.ch:/~/POSYDON/PopSyn/<id>/``
+        2. write ``SLURM`` script (with email adress contained as parameter) and send to cluster. Uses the helper function ``write_slurm(email)``.
+        3. establish ssh connection to the cluster and do:
+
+            * activate conda environment
+            * run slurm script (with ``sbatch``)
+              Redirects ``stderr``/``stdout`` to log files.
+
 
     Parameters
     ----------
@@ -93,7 +125,8 @@ sbatch run-script.slurm
 
 
 def pull_results(pk):
-    """Copies the .pkl results file corresponding to the simulation with id 'pk' (primary key) from the cluster to the local server when a user wants to retrieve it. Function is called from the SimResultsView view handler.
+    """
+    Copies the ``.pkl`` results file corresponding to the simulation with id ``pk`` (primary key) from the cluster to the local server when a user wants to retrieve it. Function is called from the SimResultsView view handler.
 
     Parameters
     ----------
@@ -120,7 +153,8 @@ def pull_results(pk):
 
 
 def gen_log(pk):
-    """Generates one log.txt file by appending the stderr and stdout log files compiled during a simulation run on the cluster.
+    """
+    Generates one complete ``log.txt`` file by appending the stderr and stdout log files compiled during a simulation run on the cluster. uses the ``import_logfiles(pk)`` helper function.
 
     Parameters
     ----------
@@ -139,8 +173,6 @@ def gen_log(pk):
 
     #import err and out files from the cluster after job completion
     import_logfiles(pk)
-
-    ## TODO: append retrieved files to the local out and err log files generated during ssh connection (in run_sim)
 
     with open(log_path, 'w+') as log:
         current_date = datetime.datetime.now()
@@ -166,6 +198,7 @@ ERR STREAM:
             log.write(job_err.read())   #append cluster job error log
 
     return log_path
+
 
 
 ###################################
@@ -197,6 +230,8 @@ def write_slurm(path, email):
 
 srun python script.py\n"""
         f.write(buffer)
+
+
 
 def import_logfiles(pk):
     remote_sim_dir = get_rmt_sim_dir(pk)

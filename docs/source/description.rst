@@ -1,5 +1,3 @@
-.. on the HPC cluster (in this case the `Baobab<https://baobab.unige.ch/enduser/src/enduser/access.html>_` hosted by the University of Geneva.
-
 Description
 ===========
 
