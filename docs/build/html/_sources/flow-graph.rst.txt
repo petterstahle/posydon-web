@@ -3,7 +3,10 @@ Flow visualization
 
 This section describes the process to visualize a simulation flow.
 
-When the url ``<posydon-web-addr>/sims/<id>/graph`` is requested, this will make the server render the image using the genGraph module:
+When the url ``<posydon-web-addr>/sims/<id>/graph`` is requested, this will make the server render the image using the genGraph module.
+
+*Option*: You can also add the following options in the url to download the image as a pdf:
+   ``<posydon-web-addr>/sims/2/graph/?format=pdf&download=true``
 
 .. automodule:: sims.graph.genGraph
    :members: genGraph

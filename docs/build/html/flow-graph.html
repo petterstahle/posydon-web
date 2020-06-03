@@ -167,7 +167,11 @@
   <div class="section" id="flow-visualization">
 <h1><span class="section-number">1. </span>Flow visualization<a class="headerlink" href="#flow-visualization" title="Permalink to this headline">¶</a></h1>
 <p>This section describes the process to visualize a simulation flow.</p>
-<p>When the url <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/graph</span></code> is requested, this will make the server render the image using the genGraph module:</p>
+<p>When the url <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;/graph</span></code> is requested, this will make the server render the image using the genGraph module.</p>
+<dl class="simple">
+<dt><em>Option</em>: You can also add the following options in the url to download the image as a pdf:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/2/graph/?format=pdf&amp;download=true</span></code></p>
+</dd>
+</dl>
 <span class="target" id="module-sims.graph.genGraph"></span><div class="section" id="module-gengraph">
 <h2><span class="section-number">1.1. </span>Module genGraph<a class="headerlink" href="#module-gengraph" title="Permalink to this headline">¶</a></h2>
 <p>This python module is used to take a simulation flow and generate its
