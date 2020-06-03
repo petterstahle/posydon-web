@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Set-up Guide" href="setup.html" /> 
+    <link rel="prev" title="3. Simulation handling" href="sim-handler.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -81,7 +81,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="setup.html">Set-up Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="description.html">Description</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module genGraph</a></li>
 </ul>
 
@@ -147,15 +148,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-graph.genGraph"></span><div class="section" id="module-gengraph">
+  <span class="target" id="module-sims.graph.genGraph"></span><div class="section" id="module-gengraph">
 <h1>Module genGraph<a class="headerlink" href="#module-gengraph" title="Permalink to this headline">¶</a></h1>
 <p>This python module is used to take a simulation flow and generate its
 associated graph. The main function genGraph is called from the SimPropGraphView view function, and uses the parseFlow_dict() method for parsing a flow into the desired fields, and the genGraphHelper() method for generating a graph from the given flow fields.
 This script requires a step_default dictionary to be defined. It contains the list of steps and their corresponding bubbles.
 It uses the graphviz library and its Digraph method for generating graphs from dot files.</p>
 <dl class="py function">
-<dt id="graph.genGraph.genGraph">
-<code class="sig-prename descclassname">graph.genGraph.</code><code class="sig-name descname">genGraph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flow</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'graph'</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'./outputs/'</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'png'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graph.genGraph.genGraph" title="Permalink to this definition">¶</a></dt>
+<dt id="sims.graph.genGraph.genGraph">
+<code class="sig-prename descclassname">sims.graph.genGraph.</code><code class="sig-name descname">genGraph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flow</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'graph'</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'./outputs/'</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'png'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sims.graph.genGraph.genGraph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to generate graph from a flow with correct format.</p>
 <p>Uses parseFlow_dict and genGraphHelper helper functions.
 Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.</p>
@@ -189,7 +190,7 @@ Requires a step_default dictionary, which maps bubbles to their default correspo
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="setup.html" class="btn btn-neutral float-left" title="Set-up Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="sim-handler.html" class="btn btn-neutral float-left" title="3. Simulation handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

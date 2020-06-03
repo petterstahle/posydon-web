@@ -1,2 +1,2 @@
-.. automodule:: graph.genGraph
+.. automodule:: sims.graph.genGraph
    :members: genGraph

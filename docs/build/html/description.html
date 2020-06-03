@@ -1,0 +1,295 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Description &mdash; posydon-web 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Flow visualization" href="flow-graph.html" />
+    <link rel="prev" title="Get started" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> posydon-web
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Get started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Description</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-django-app-structure">The Django app structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posydon-web-functionalities">Posydon-web functionalities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flow-graph.html">1. Simulation flow visualization.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script-gen.html">2. Binary evolution script generation.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sim-handler.html">3. Simulation handling.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">posydon-web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Description</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/description.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-django-app-structure">
+<h2>The Django app structure<a class="headerlink" href="#the-django-app-structure" title="Permalink to this headline">¶</a></h2>
+<p>See the full <a class="reference external" href="https://docs.djangoproject.com/en/3.0/">Django documentation</a> for more details.
+Essentially, the Django structure is designed in a way so that smaller individual apps that are independent from one another (i.e. serve a specific purpose) can be implemented together and reused to make an integral web-app.
+The flow for a Django build follows the concept of “layers” that together implement an app.
+Here is a brief list of these layers:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The model layer</dt><dd><p>Django provides an abstraction layer (the “models”) for structuring and manipulating the data of your Web application.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The view layer</dt><dd><p>Django has the concept of “views” to encapsulate the logic responsible for processing a user’s request and for returning the response.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The template layer</dt><dd><p>The template layer provides a designer-friendly syntax for rendering the information to be presented to the user.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Forms</dt><dd><p>Django provides a rich framework to facilitate the creation of forms and the manipulation of form data.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="figure align-default" id="id1">
+<a class="reference internal image-reference" href="_images/Django-Flow.png"><img alt="Django app structure." src="_images/Django-Flow.png" style="width: 683.0px; height: 384.0px;" /></a>
+<p class="caption"><span class="caption-text"><em>A model of the Django app structure (https://www.youtube.com/watch?v=jmX27FrCqqs)</em></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="posydon-web-functionalities">
+<h2>Posydon-web functionalities<a class="headerlink" href="#posydon-web-functionalities" title="Permalink to this headline">¶</a></h2>
+<p>This web-app consists of 2 apps:</p>
+<blockquote>
+<div><ul>
+<li><dl class="simple">
+<dt>pages</dt><dd><p>Defines the basic skeleton for the the overal site structure (ex: Home, Navbar, About…)</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>sims</dt><dd><p>This is the main app for the project. It’s purpose is the handling of simulations, and provides the 3 following functionalities:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flow-graph.html">1. Simulation flow visualization.</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flow-graph.html#module-gengraph">1.1. Module genGraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-graph.html#example-of-a-flow-with-correct-format">1.2. Example of a flow with correct format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-graph.html#example-of-step-default-dictionary">1.3. Example of step_default dictionary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="script-gen.html">2. Binary evolution script generation.</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="script-gen.html#module-genscript">2.1. Module genScript</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim-handler.html">3. Simulation handling.</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sim-handler.html#module-manage-job">3.1. Module manage_job</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<dl>
+<dt><strong>Usage</strong></dt><dd><p>When the <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/</span></code> url is requested, the user is served the <em>Simulations</em> page. Here, a user can view existing simulations (the term <em>simulation</em> here refers to the instance of a set of simulation properties linked to the database (SimProp model), as well as its corresponding job on the cluster and the results if these exist), as well as create a new one. In this case, the <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/create</span></code> url will be requested and will render a form for the user to fill in, which contains the fields representing the simulation properties.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The implementation for submitting a <em>simulation properties</em> form has been hard-coded and so far only supports the <code class="docutils literal notranslate"><span class="pre">step-zams/cosmic</span></code> and <code class="docutils literal notranslate"><span class="pre">step-mesa</span></code> options.</p>
+</div>
+<p>From the <em>simulations</em> page, a user can click on a simulation, and <code class="docutils literal notranslate"><span class="pre">&lt;posydon-web-addr&gt;/sims/&lt;id&gt;</span></code> will be requested, with <code class="docutils literal notranslate"><span class="pre">id</span></code> representing the primary key of the SimProp instance associated with it, in other words, the unique id corresponding to the simulation in the database. This next page will display the details of a simulation before running it. Here the user will be able to see the simulation properties, and will be given some options corresponding to the 3 functionalities mentioned above.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="figure align-default" id="id2">
+<img alt="Example of simulation properties detail page." src="_images/Sim_prop_detail_page.png" />
+<p class="caption"><span class="caption-text"><em>Example of a simulation details page</em></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flow-graph.html" class="btn btn-neutral float-right" title="1. Flow visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="setup.html" class="btn btn-neutral float-left" title="Get started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Petter Stahle
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -9,21 +9,6 @@ It uses the graphviz library and its Digraph method for generating graphs from d
 from graphviz import Digraph
 import ast
 
-# dictionary of steps with default children states
-# step_default = {
-#     'step_1':
-#     [('star1_state2','star2_state2'),
-#     ('star1_state3','star2_state3'),
-#     ('star1_state4','star2_state4'),
-#     ('star1_state5','star2_state5'),
-#     ('star1_state6','star2_state6')],
-#     'step_2':
-#     [('star1_state7','star2_state7'),
-#     ('star1_state8','star2_state8')],
-#     'step_3':
-#     [('star1_state9','star2_state9')]
-#     }
-
 step_default = {
     'step_zams':{'CO+He':[
     ('BH', 'HeMS'),
@@ -45,6 +30,41 @@ step_default = {
     }
 
 
+def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
+    """Used to generate graph from a flow with correct format.
+
+    Uses parseFlow_dict and genGraphHelper helper functions.
+    Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.
+
+    Parameters
+    ----------
+    flow : dict
+        Simulation flow as dictionary with correct format, see examples below..
+    title : string
+        Name of image to be generated.
+    path : string
+        Path where image is to be generated. Default is /sims/graph/outputs`.
+    format : string
+        Format of image (must be supported by Digraph method), default is .png, can also be pdf.
+    **kwargs : dict
+        Dictionnary of keyword arguments describing the step_default dictionary.
+
+    """
+
+    flow_parsed = None
+    # if flow is a string, transform it to a dict
+    if isinstance(flow, str):
+        flow_dict = ast.literal_eval(flow)
+        flow_parsed = parseFlow_dict(flow_dict)
+    else:
+        flow_parsed = parseFlow_dict(flow)
+    genGraphHelper(flow_parsed, title, path, format, **kwargs)
+    return
+
+
+######################
+# HELPER FUNCTIONS
+######################
 
 def parseFlow_dict(flow):
     """Parses the content of a flow given as a dictionary, used in genGraph() function.
@@ -140,49 +160,11 @@ def genGraphHelper(parsed_flow, title = 'graph', path = './outputs/', format = '
             parent_index = stepIndexes[stepParent]
             dot.edge(parent_index, bubble_index, arrowhead=default_arrowtype)
 
-
     #RENDER GRAPH
     full_path = path + title
     dot.render(full_path)
     return
 
-
-
-def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwargs):
-    """Used to generate graph from a flow with correct format.
-
-    Uses parseFlow_dict and genGraphHelper helper functions.
-    Requires a step_default dictionary, which maps bubbles to their default corresponding parent step.
-
-    Parameters
-    ----------
-    flow : dict
-        Simulation flow as dictionary with correct format, see examples below..
-    title : string
-        Name of image to be generated.
-    path : string
-        Path where image is to be generated. Default is /sims/graph/outputs`.
-    format : string
-        Format of image (must be supported by Digraph method), default is .png, can also be pdf.
-    **kwargs : dict
-        Dictionnary of keyword arguments describing the step_default dictionary.
-
-    Returns
-    -------
-    type
-        Description of returned object.
-
-    """
-    
-    flow_parsed = None
-    # if flow is a string, transform it to a dict
-    if isinstance(flow, str):
-        flow_dict = ast.literal_eval(flow)
-        flow_parsed = parseFlow_dict(flow_dict)
-    else:
-        flow_parsed = parseFlow_dict(flow)
-    genGraphHelper(flow_parsed, title, path, format, **kwargs)
-    return
 
 
 
@@ -213,55 +195,3 @@ def genGraph(flow, title = 'graph', path = './outputs/', format = 'png', **kwarg
 #         ('BH', 'NS', 'detached', None): 'step_end',
 #         ('BH', 'BH', 'detached', None): 'step_end',
 #         }
-
-# run script for debug
-# genGraph(flow, title='test', format='pdf')
-
-
-
-
-
-
-# buggy function, use parseFlow_dict if possible
-# will parse the content of flow given as a string
-# returns list of "flow levels"
-# each 'level' is a list of 3 elements (string): starA_state, starB_state, step_name
-# def parseFlow_string(flow):
-#
-#     #split flow into levels
-#     levels = flow.strip()
-#     levels = levels.strip('{}')
-#     levels = levels.strip()
-#     levels = levels.split('\n')
-#
-#     flow_size = len(levels)
-#     parsed_fields = [[] for _ in range(flow_size)]
-#
-#     #level parsing
-#     for i, l in enumerate(levels):
-#         #partition level into bubble and step
-#         bubble, _, step = l.partition(':')
-#
-#         #bubble parsing
-#         bubble = bubble.strip()
-#         bubble = bubble.strip('()')
-#         #split bubble into params
-#         params = bubble.split(',')
-#         #delete last 2 fields of params (not useful for graph)
-#         params.pop(-1)
-#         params.pop(-1)
-#         #param parsing
-#         for p in params:
-#             p = p.strip()
-#             p = p.strip("''")
-#             #add to field
-#             parsed_fields[i].append(p)
-#
-#         #step parsing
-#         step = step.strip(',')
-#         step = step.strip()
-#         step = step.strip("''")
-#         #add to field
-#         parsed_fields[i].append(step)
-#
-#     return parsed_fields

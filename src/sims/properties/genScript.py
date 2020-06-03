@@ -1,3 +1,9 @@
+"""
+Module genScript
+================
+This module contains the function genScript, used to generate a binaries evolution simulation.
+"""
+
 import os
 from django.conf import settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "posydon.settings")
@@ -8,10 +14,15 @@ def genScript(obj):
     Parameters
     ----------
     obj : SimProp object
-        Database model which contains the info for SimulationProperties.
+        Database model which contains the info for SimulationProperties (defined in ``src/sims/models.py``).
 
+    Returns
+    -------
+    string
+        Path of generated script.
 
     """
+
     #PATH INITIALISATION
     #create (unique) directory with primary key (object.id)
     dir_path = os.path.join(settings.BASE_DIR, 'sims/properties/outputs/'+str(obj.id)+'/')

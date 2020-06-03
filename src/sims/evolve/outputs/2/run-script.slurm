@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #Specify email adress for notification:
-#SBATCH --mail-user=petter.stahle@etu.unige.ch
+#SBATCH --mail-user=petter.stahle@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH --account=fragkos
 #
